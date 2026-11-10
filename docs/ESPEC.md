@@ -12,29 +12,29 @@ API documentada, React e deploy.
 
 ## 1. Pessoas e contas de demonstração
 
-| Papel | O que faz | Login demo |
-|---|---|---|
-| **Dono(a)** (`owner`) | configura o negócio, serviços, equipe, vê o dashboard e a auditoria | `dono@demo.agendai.dev` |
-| **Profissional** (`staff`) | vê e gerencia a própria agenda, marca falta/concluído | `profissional@demo.agendai.dev` |
-| **Cliente final** | agenda pela página pública, paga, recebe lembrete, cancela pelo link | sem conta (link mágico no e-mail) |
+| Papel                      | O que faz                                                            | Login demo                        |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------- |
+| **Dono(a)** (`owner`)      | configura o negócio, serviços, equipe, vê o dashboard e a auditoria  | `dono@demo.agendai.dev`           |
+| **Profissional** (`staff`) | vê e gerencia a própria agenda, marca falta/concluído                | `profissional@demo.agendai.dev`   |
+| **Cliente final**          | agenda pela página pública, paga, recebe lembrete, cancela pelo link | sem conta (link mágico no e-mail) |
 
 A demo tem um botão **"Entrar como dono(a)"** na tela de login. O recrutador precisa ver o
 sistema em menos de 1 minuto. Os dados demo são recriados todo dia por um job agendado.
 
 ## 2. Stack
 
-| Camada | Escolha | Por quê |
-|---|---|---|
-| Backend | Laravel 13, PHP 8.4 | o mercado PHP pede Laravel |
-| Frontend | Inertia + React + TypeScript + Tailwind | React aparece em 52% das vagas analisadas |
-| Banco | PostgreSQL 17 | permite a *exclusion constraint* que impede dois agendamentos no mesmo horário |
-| Fila / cache | Redis + Laravel Horizon | lembretes, expiração de reservas, webhooks |
-| Testes | Pest, Larastan nível 6, Pint | qualidade visível no CI |
-| Ambiente | Docker Compose (app, postgres, redis, mailpit) | `docker compose up` e pronto |
-| CI | GitHub Actions: lint, análise estática, testes, build do front | badge verde no README |
-| API | Sanctum (tokens) + Scribe (documentação OpenAPI) | |
-| Pagamento | Mercado Pago Checkout Pro, em sandbox | o gateway mais comum no Brasil |
-| Deploy | decidido no M6 (Laravel Cloud ou Railway) | precisa rodar o worker da fila |
+| Camada       | Escolha                                                        | Por quê                                                                        |
+| ------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Backend      | Laravel 13, PHP 8.4                                            | o mercado PHP pede Laravel                                                     |
+| Frontend     | Inertia + React + TypeScript + Tailwind                        | React aparece em 52% das vagas analisadas                                      |
+| Banco        | PostgreSQL 17                                                  | permite a _exclusion constraint_ que impede dois agendamentos no mesmo horário |
+| Fila / cache | Redis + Laravel Horizon                                        | lembretes, expiração de reservas, webhooks                                     |
+| Testes       | Pest, Larastan nível 6, Pint                                   | qualidade visível no CI                                                        |
+| Ambiente     | Docker Compose (app, postgres, redis, mailpit)                 | `docker compose up` e pronto                                                   |
+| CI           | GitHub Actions: lint, análise estática, testes, build do front | badge verde no README                                                          |
+| API          | Sanctum (tokens) + Scribe (documentação OpenAPI)               |                                                                                |
+| Pagamento    | Mercado Pago Checkout Pro, em sandbox                          | o gateway mais comum no Brasil                                                 |
+| Deploy       | decidido no M6 (Laravel Cloud ou Railway)                      | precisa rodar o worker da fila                                                 |
 
 Código, commits e README em **inglês** (vale também para vagas internacionais). A interface
 fica em PT-BR, com i18n preparado para EN.
@@ -92,10 +92,12 @@ Status do agendamento: `pending_payment → confirmed → completed | no_show`, 
 ## 5. Telas
 
 **Público**
+
 - `/b/{slug}`: escolher serviço → profissional (ou "qualquer um") → dia → horário → dados → pagar
 - `/b/{slug}/agendamento/{token}`: ver, adicionar ao calendário (.ics) e cancelar dentro do prazo
 
 **Painel (dono/profissional)**
+
 - Agenda dia/semana por profissional, com arrastar para remarcar (dono)
 - Agendamentos: lista com filtros e ações (concluído, falta, cancelar)
 - Serviços, Equipe (convite por e-mail), Horários e folgas
@@ -115,21 +117,22 @@ POST /appointments                   cria a reserva (Idempotency-Key obrigatóri
 GET  /appointments/{id}
 POST /appointments/{id}/cancel
 ```
+
 Rate limit por token. Erros no formato `application/problem+json`.
 
 ## 7. Marcos (cerca de 1 por semana, meio período)
 
 Cada marco termina com o CI verde, deploy de preview e uma seção atualizada no README.
 
-| # | Entrega | Pronto quando |
-|---|---|---|
-| **M0** | Laravel 13 + Inertia/React/TS + Docker Compose + Pest/Larastan/Pint + GitHub Actions | `docker compose up` sobe tudo e o CI fica verde |
-| **M1** | Tenants, cadastro do negócio, login, papéis, `BelongsToTenant`, auditoria base | testes de isolamento entre tenants e teste de arquitetura passando |
-| **M2** | Serviços, equipe, horários e folgas (CRUDs com validação e policies) | o dono configura o negócio de ponta a ponta |
-| **M3** | Motor de horários livres + página pública + reserva com exclusion constraint | teste de concorrência prova que não há reserva duplicada |
-| **M4** | Mercado Pago sandbox, webhook assinado e idempotente, expiração de reservas | teste com webhook duplicado e fora de ordem |
-| **M5** | E-mails de confirmação/lembrete na fila (Horizon), cancelamento por link, dashboard | lembrete 24 h antes chega no Mailpit |
-| **M6** | API v1 + Scribe, seed demo, deploy, landing, README com prints/GIF e estudo de caso | link no portfólio, com login demo funcionando |
+| #      | Entrega                                                                              | Pronto quando                                                      |
+| ------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| **M0** | Laravel 13 + Inertia/React/TS + Docker Compose + Pest/Larastan/Pint + GitHub Actions | `docker compose up` sobe tudo e o CI fica verde                    |
+| **M1** | Tenants, cadastro do negócio, login, papéis, `BelongsToTenant`, auditoria base       | testes de isolamento entre tenants e teste de arquitetura passando |
+| **M2** | Serviços, equipe, horários e folgas (CRUDs com validação e policies)                 | o dono configura o negócio de ponta a ponta                        |
+| **M3** | Motor de horários livres + página pública + reserva com exclusion constraint         | teste de concorrência prova que não há reserva duplicada           |
+| **M4** | Mercado Pago sandbox, webhook assinado e idempotente, expiração de reservas          | teste com webhook duplicado e fora de ordem                        |
+| **M5** | E-mails de confirmação/lembrete na fila (Horizon), cancelamento por link, dashboard  | lembrete 24 h antes chega no Mailpit                               |
+| **M6** | API v1 + Scribe, seed demo, deploy, landing, README com prints/GIF e estudo de caso  | link no portfólio, com login demo funcionando                      |
 
 ## 8. Fora do escopo (de propósito)
 
