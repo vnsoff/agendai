@@ -7,9 +7,9 @@ use Illuminate\Support\Str;
  * libpq that doesn't send SNI, so Neon can't tell which endpoint we want: pass the endpoint ID
  * in the password instead (https://neon.com/docs/connect/connection-errors#the-endpoint-id-is-not-specified).
  */
-$pgsqlUrl = env('DB_URL') ?: env('DATABASE_URL');
+$pgsqlUrl = (string) (env('DB_URL') ?: env('DATABASE_URL'));
 
-if ($pgsqlUrl && preg_match('/@(ep-[a-z0-9-]+?)(?:-pooler)?\./', $pgsqlUrl, $neon) && ! str_contains($pgsqlUrl, 'endpoint%3D')) {
+if ($pgsqlUrl !== '' && preg_match('/@(ep-[a-z0-9-]+?)(?:-pooler)?\./', $pgsqlUrl, $neon) && ! str_contains($pgsqlUrl, 'endpoint%3D')) {
     $pgsqlUrl = preg_replace('#^(postgres(?:ql)?://[^:/@]+:)#', '${1}'.rawurlencode('endpoint='.$neon[1].'$'), $pgsqlUrl, 1);
 }
 use Pdo\Mysql;
@@ -97,7 +97,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => $pgsqlUrl,
+            'url' => $pgsqlUrl ?: null,
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
