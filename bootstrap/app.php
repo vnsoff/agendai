@@ -27,6 +27,14 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Vercel keeps only the tail of very long log lines, which cuts the message off the top of
+        // Laravel's stack trace. Log a one-line summary first so the cause is always readable.
+        if (getenv('VERCEL')) {
+            $exceptions->report(function (Throwable $e): void {
+                error_log(sprintf('%s: %s at %s:%d', $e::class, $e->getMessage(), $e->getFile(), $e->getLine()));
+            });
+        }
+
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
