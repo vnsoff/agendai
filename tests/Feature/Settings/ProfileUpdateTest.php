@@ -96,4 +96,17 @@ class ProfileUpdateTest extends TestCase
 
         $this->assertNotNull($user->fresh());
     }
+
+    public function test_business_owner_cannot_delete_their_account()
+    {
+        $owner = User::factory()->owner()->create();
+
+        $this->actingAs($owner)
+            ->from(route('profile.edit'))
+            ->delete(route('profile.destroy'), ['password' => 'password'])
+            ->assertSessionHasErrors('password')
+            ->assertRedirect(route('profile.edit'));
+
+        $this->assertNotNull($owner->fresh());
+    }
 }
