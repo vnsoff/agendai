@@ -44,7 +44,8 @@ class BusinessSettingsTest extends TestCase
 
         $log = AuditLog::withoutTenantScope()->where('action', 'tenant.updated')->sole();
         $this->assertSame($owner->id, $log->user_id);
-        $this->assertSame(['from' => $oldName, 'to' => 'Barbearia Central'], $log->changes['name'] ?? null);
+        // assertEquals, not assertSame: jsonb stores object keys in its own order.
+        $this->assertEquals(['from' => $oldName, 'to' => 'Barbearia Central'], $log->changes['name'] ?? null);
     }
 
     public function test_saving_without_changes_writes_no_audit_entry()
