@@ -118,6 +118,10 @@ jobs:
           echo "::add-mask::$DB_URL"
           DB_URL="$DB_URL" php artisan migrate --force
 
+      # Built before `vercel pull`'s env is in play: Wayfinder boots Laravel to generate the routes.
+      - name: Build frontend
+        run: npm run build
+
       - name: Build and deploy
         id: deploy
         run: |

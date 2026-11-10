@@ -1,6 +1,8 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "regions": ["gru1"],
+    "installCommand": "echo 'Dependencies are installed in CI (.github/workflows/tests.yml)'",
+    "buildCommand": "echo 'Frontend is built in CI (.github/workflows/tests.yml)'",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.9.0",
