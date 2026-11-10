@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
+/**
+ * @template TModel of Model
+ *
+ * @implements Scope<TModel>
+ */
 class TenantScope implements Scope
 {
     /**
-     * @param  Builder<Model>  $builder
+     * @param  Builder<TModel>  $builder
+     * @param  TModel  $model
      */
     public function apply(Builder $builder, Model $model): void
     {
