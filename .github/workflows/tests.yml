@@ -111,9 +111,12 @@ jobs:
         run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Run migrations on Neon
+        # Only the direct (unpooled) URL: the other production variables point Laravel's
+        # caches at /tmp paths meant for the Vercel runtime, not for this runner.
         run: |
-          set -a; . .vercel/.env.production.local; set +a
-          DB_URL="$DATABASE_URL_UNPOOLED" php artisan migrate --force
+          DB_URL="$(grep '^DATABASE_URL_UNPOOLED=' .vercel/.env.production.local | cut -d= -f2- | tr -d '"')"
+          echo "::add-mask::$DB_URL"
+          DB_URL="$DB_URL" php artisan migrate --force
 
       - name: Build and deploy
         id: deploy
