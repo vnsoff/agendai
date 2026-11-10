@@ -1,0 +1,65 @@
+# Local development: `docker compose up -d`, then open http://localhost:8000
+# Run commands inside the app container with `docker compose exec app <command>`.
+
+x-app: &app
+  build:
+    context: docker/dev
+    args:
+      UID: ${UID:-1000}
+      GID: ${GID:-1000}
+  image: agendai-dev
+  volumes:
+    - .:/app
+  env_file: .env
+  depends_on:
+    pgsql:
+      condition: service_healthy
+    redis:
+      condition: service_started
+
+services:
+  app:
+    <<: *app
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    ports:
+      - "8000:8000"
+
+  vite:
+    <<: *app
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+
+  queue:
+    <<: *app
+    command: php artisan queue:work --tries=3
+    restart: unless-stopped
+
+  pgsql:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: agendai
+      POSTGRES_USER: agendai
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+      - ./docker/dev/pgsql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "agendai", "-d", "agendai"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+
+volumes:
+  pgsql-data:
