@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Scope;
 class TenantScope implements Scope
 {
     /**
-     * @param  Builder<TModel>  $builder
+     * @param  Builder<covariant TModel>  $builder
      * @param  TModel  $model
      */
     public function apply(Builder $builder, Model $model): void
