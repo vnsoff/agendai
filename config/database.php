@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Pdo\Mysql;
 
 /*
  * Neon (via the Vercel integration) provides DATABASE_URL. The PHP runtime on Vercel ships a
@@ -12,7 +13,6 @@ $pgsqlUrl = (string) (env('DB_URL') ?: env('DATABASE_URL'));
 if ($pgsqlUrl !== '' && preg_match('/@(ep-[a-z0-9-]+?)(?:-pooler)?\./', $pgsqlUrl, $neon) && ! str_contains($pgsqlUrl, 'endpoint%3D')) {
     $pgsqlUrl = preg_replace('#^(postgres(?:ql)?://[^:/@]+:)#', '${1}'.rawurlencode('endpoint='.$neon[1].'$'), $pgsqlUrl, 1);
 }
-use Pdo\Mysql;
 
 return [
 
