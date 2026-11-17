@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Role;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +27,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'tenant_id' => Tenant::factory(),
+            'role' => Role::Staff,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
@@ -36,6 +40,16 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => null,
             /* @end-chisel-2fa */
         ];
+    }
+
+    public function owner(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => Role::Owner]);
+    }
+
+    public function forTenant(Tenant $tenant): static
+    {
+        return $this->state(fn (array $attributes) => ['tenant_id' => $tenant->id]);
     }
 
     /**

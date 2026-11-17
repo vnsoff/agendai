@@ -16,6 +16,16 @@ export type Auth = {
     user: User;
 };
 
+/** The business the signed-in user works for (null on guest pages). */
+export type Tenant = {
+    name: string;
+    slug: string;
+};
+
+export type Abilities = {
+    manageBusiness: boolean;
+};
+
 /* @chisel-passkeys */
 export type Passkey = {
     id: number;

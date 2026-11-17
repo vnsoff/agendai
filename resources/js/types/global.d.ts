@@ -1,4 +1,4 @@
-import type { Auth } from '@/types/auth';
+import type { Abilities, Auth, Tenant } from '@/types/auth';
 
 declare module 'react' {
     interface InputHTMLAttributes<T> {
@@ -11,6 +11,8 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
+            tenant: Tenant | null;
+            can: Abilities;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

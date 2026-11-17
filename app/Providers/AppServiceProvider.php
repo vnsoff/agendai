@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Database\NeonPostgresConnector;
+use App\Models\User;
+use App\Tenancy\CurrentTenant;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -17,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind('db.connector.pgsql', NeonPostgresConnector::class);
+
+        // Scoped: reset at the start of every request and queued job, so a tenant never leaks.
+        $this->app->scoped(CurrentTenant::class);
     }
 
     /**
@@ -25,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        Gate::define('manage-business', fn (User $user): bool => $user->isOwner());
     }
 
     /**

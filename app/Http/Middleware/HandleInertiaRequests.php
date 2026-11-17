@@ -41,6 +41,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'tenant' => fn () => $request->user()?->tenant->only(['name', 'slug']),
+            'can' => fn () => [
+                'manageBusiness' => (bool) $request->user()?->can('manage-business'),
+            ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

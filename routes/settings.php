@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\BusinessController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 /* @chisel-password-confirmation */
@@ -16,6 +17,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('settings/business', [BusinessController::class, 'edit'])->name('business.edit');
+    Route::patch('settings/business', [BusinessController::class, 'update'])->name('business.update');
 
     Route::get('settings/security', [SecurityController::class, 'edit'])
         /* @chisel-password-confirmation */

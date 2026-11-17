@@ -3,7 +3,7 @@ import { usePage } from '@inertiajs/react';
 import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function AppLogo() {
-    const { name } = usePage().props;
+    const { name, tenant } = usePage().props;
 
     return (
         <>
@@ -14,6 +14,11 @@ export default function AppLogo() {
                 <span className="mb-0.5 truncate leading-tight font-semibold">
                     {name}
                 </span>
+                {tenant && (
+                    <span className="truncate text-xs text-muted-foreground">
+                        {tenant.name}
+                    </span>
+                )}
             </div>
         </>
     );
