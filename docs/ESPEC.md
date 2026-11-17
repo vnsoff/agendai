@@ -86,14 +86,14 @@ audit_logs        id, tenant_id, user_id, action, subject_type, subject_id,
                   changes jsonb, ip, created_at
 ```
 
-Status do agendamento: `pending_payment → confirmed → completed | no_show`, e
-`pending_payment → expired`, além de `confirmed → cancelled`.
+Status do agendamento: `pending_payment -> confirmed -> completed | no_show`, e
+`pending_payment -> expired`, além de `confirmed -> cancelled`.
 
 ## 5. Telas
 
 **Público**
 
-- `/b/{slug}`: escolher serviço → profissional (ou "qualquer um") → dia → horário → dados → pagar
+- `/b/{slug}`: escolher serviço -> profissional (ou "qualquer um") -> dia -> horário -> dados -> pagar
 - `/b/{slug}/agendamento/{token}`: ver, adicionar ao calendário (.ics) e cancelar dentro do prazo
 
 **Painel (dono/profissional)**
