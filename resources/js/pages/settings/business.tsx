@@ -55,8 +55,8 @@ export default function Business({ business, timezones }: Props) {
                                 <Label htmlFor="slug">
                                     Booking page address
                                 </Label>
-                                <div className="flex items-center gap-1 text-sm">
-                                    <span className="text-muted-foreground">
+                                <div className="flex flex-wrap items-center gap-1 text-sm">
+                                    <span className="break-all text-muted-foreground">
                                         {window.location.host}/b/
                                     </span>
                                     <Input
@@ -65,6 +65,7 @@ export default function Business({ business, timezones }: Props) {
                                         defaultValue={business.slug}
                                         required
                                         pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                                        className="min-w-0 flex-1 basis-40"
                                         title="Lowercase letters, numbers and single hyphens"
                                     />
                                 </div>
@@ -77,7 +78,7 @@ export default function Business({ business, timezones }: Props) {
                                     id="timezone"
                                     name="timezone"
                                     defaultValue={business.timezone}
-                                    className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs"
+                                    className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
                                 >
                                     {timezones.map((tz) => (
                                         <option key={tz} value={tz}>
